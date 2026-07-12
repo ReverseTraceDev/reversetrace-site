@@ -3,45 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>ReverseTrace</title>
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #111;
-            color: white;
+            margin: 0;
+            background-color: #0d0d0d;
+            color: #ffffff;
             font-family: Arial, sans-serif;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 8%;
+            border-bottom: 1px solid #252525;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .blue {
+            color: #2ea8ff;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-left: 24px;
+        }
+
+        nav a:hover {
+            color: #2ea8ff;
+        }
+
+        main {
+            min-height: 80vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            padding: 60px 20px;
             text-align: center;
+        }
+
+        .hero {
+            max-width: 750px;
+        }
+
+        .logo {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 30px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
         }
 
         h1 {
             font-size: 4rem;
-            margin-bottom: 10px;
+            margin: 0 0 20px;
         }
 
-        .blue {
-            color: #2EA8FF;
+        .intro {
+            color: #c7c7c7;
+            font-size: 1.25rem;
+            line-height: 1.7;
         }
 
-        p {
-            color: #cccccc;
-            font-size: 1.2rem;
-            margin: 6px 0;
+        .buttons {
+            margin-top: 35px;
+        }
+
+        .button {
+            display: inline-block;
+            margin: 8px;
+            padding: 13px 24px;
+            border: 2px solid #2ea8ff;
+            border-radius: 6px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .button-primary {
+            background-color: #2ea8ff;
+            color: #071018;
+        }
+
+        .button:hover {
+            opacity: 0.8;
+        }
+
+        footer {
+            padding: 25px;
+            border-top: 1px solid #252525;
+            color: #888888;
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+            header {
+                flex-direction: column;
+                gap: 18px;
+            }
+
+            nav a {
+                margin: 0 8px;
+            }
+
+            h1 {
+                font-size: 2.8rem;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div>
-    <h1>Reverse<span class="blue">Trace</span></h1>
+    <header>
+        <div class="brand">
+            Reverse<span class="blue">Trace</span>
+        </div>
 
-    <p>This is my notebook.</p>
-    <p>My journal.</p>
-    <p>My journey.</p>
-</div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="#">About</a>
+            <a href="#">Blog</a>
+            <a href="#">Projects</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+
+            <div class="logo">
+                R<span class="blue">T</span>
+            </div>
+
+            <h1>
+                Reverse<span class="blue">Trace</span>
+            </h1>
+
+            <p class="intro">
+                This is my notebook. My journal. My journey through
+                computer science, computing and cybersecurity.
+            </p>
+
+            <p class="intro">
+                I am a BSc Computing &amp; IT student documenting what I learn,
+                the investigations I complete, and the mistakes that help me grow.
+            </p>
+
+            <div class="buttons">
+                <a class="button button-primary" href="#">Read my blog</a>
+                <a class="button" href="https://github.com/ReverseTraceDev">
+                    View GitHub
+                </a>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        © 2026 ReverseTrace
+    </footer>
 
 </body>
 </html>
